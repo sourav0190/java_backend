@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<!--<h1>sourav is best-->
+<!--    <span th:text = "${channel}"</span>-->
+<!--</h1>-->
+<!--<h2>-->
+<!--    <span th:text = "${channel}"</span>-->
+
+<!--</h2>-->
+<!--<h1 th:if="${student_age > 17}">you can vote</h1>-->
+<!--<h1 th:unless="${student_age > 17}">no vote</h1>-->
+<div th:switch = "${student_age}">
+    <span th:case = " '1'"> try again</span>
+    <span th:case = " '2'"> try again</span>
+    <span th:case = " '3'"> chal be</span>
+    <span th:case = " '4'"> win</span>
+
+
+
+
+
+</div>
+</body>
+</html>

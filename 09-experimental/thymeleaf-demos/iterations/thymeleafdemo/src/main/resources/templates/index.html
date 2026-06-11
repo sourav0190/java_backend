@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf Tutorial</title>
+</head>
+<body>
+
+<h1>Multiplication Table</h1>
+
+<table border="1">
+    <tr>
+        <th>Expression</th>
+        <th>Result</th>
+    </tr>
+
+    <tr th:each="item, stat : ${table}">
+        <td th:text="${number} + ' x ' + ${stat.index + 1}"></td>
+        <td th:text="${item}"></td>
+    </tr>
+
+</table>
+
+</body>
+</html>

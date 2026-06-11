@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blog App</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>All Blog Posts</h1>
+
+        <div class="header-actions">
+            <a href="/new" class="btn btn-new">+ New Post</a>
+        </div>
+
+        <!-- Control Panel matching the screenshot -->
+        <div class="control-panel">
+            <h3>Update or Delete a Post by ID</h3>
+            <div class="control-group">
+                <input type="number" id="targetId" class="id-input" placeholder="ID" />
+
+                <button onclick="handleAction('edit')" class="btn btn-edit">Edit Post</button>
+                <button onclick="handleAction('delete')" class="btn btn-delete">Delete Post</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Content</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post : ${posts}">
+                    <td th:text="${post.id}">ID</td>
+                    <td th:text="${post.title}">Title</td>
+                    <td th:text="${post.author}">Author</td>
+                    <td th:text="${post.content}">Content</td>
+                    <td th:text="${post.date != null ? #temporals.format(post.date, 'yyyy-MM-dd HH:mm') : 'N/A'}">Date
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function handleAction(action) {
+            const id = document.getElementById('targetId').value;
+            if (!id) {
+                alert('Please enter a Post ID');
+                return;
+            }
+
+            if (action === 'edit') {
+                window.location.href = '/edit/' + id;
+            } else if (action === 'delete') {
+                if (confirm('Are you sure you want to delete post ID ' + id + '?')) {
+                    window.location.href = '/delete/' + id;
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

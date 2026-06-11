@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Banking Portal</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card register-card">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">Create Account</h2>
+
+        <div th:if="${param.success}"
+            style="background-color: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: center;">
+            Registration successful! <a th:href="@{/login}" style="font-weight: bold; text-decoration: underline;">Login
+                here</a>
+        </div>
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" th:field="*{fullName}" class="form-input" required>
+                <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"
+                    style="color: red; font-size: 0.875rem; margin-top: 0.25rem;"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" th:field="*{username}" class="form-input" required>
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                    style="color: red; font-size: 0.875rem; margin-top: 0.25rem;"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" th:field="*{password}" class="form-input" required>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                    style="color: red; font-size: 0.875rem; margin-top: 0.25rem;"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Register</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 1.5rem; color: #6b7280;">
+            Already have an account? <a th:href="@{/login}"
+                style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign In</a>
+        </p>
+    </div>
+</body>
+
+</html>
