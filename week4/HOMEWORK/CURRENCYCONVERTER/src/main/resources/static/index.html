@@ -112,7 +112,8 @@
             document.getElementById("units").value;
 
         const response = await fetch(
-            `http://localhost:9091/convertCurrency?fromCurrency=${fromCurrency}&toCurrency=${toCurrency}&units=${units}`
+           const url =
+  `https://souravkacurrencyconverter.up.railway.app/convertCurrency?fromCurrency=${from}&toCurrency=${to}&units=${units}`;
         );
 
         const data = await response.json();
