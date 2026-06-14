@@ -18,7 +18,6 @@ public class CurrencyService {
     public String apiurl;
     private final RestClient restClient;
 
-
     public CurrencyService(RestClient restClient) {
         this.restClient = restClient;
     }
@@ -31,24 +30,21 @@ public class CurrencyService {
         String to = toCurrency.toUpperCase();
         log.info("Currency conversion started");
 
-
-
         log.info("From Currency: {}, To Currency: {}, Units: {}",
                 from, to, units);
 
         log.info("Calling FreeCurrency API");
 
-        FrankfurterResponseDto responsedto =
-                restClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path(apiurl)
-                                .queryParam("apikey", apikey)
+        FrankfurterResponseDto responsedto = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(apiurl)
+                        .queryParam("apikey", apikey)
 
-                                .queryParam("base_currency", from)
-                                .queryParam("currencies", to)
-                                .build())
-                        .retrieve()
-                        .body(FrankfurterResponseDto.class);
+                        .queryParam("base_currency", from)
+                        .queryParam("currencies", to)
+                        .build())
+                .retrieve()
+                .body(FrankfurterResponseDto.class);
         log.info("Free Currency API response: {}", responsedto);
 
         Double exchangedRate = responsedto.getData().get(to);
@@ -60,9 +56,8 @@ public class CurrencyService {
                 to,
                 units,
                 exchangedRate,
-                convertedAmount  );
+                convertedAmount);
 
     }
 
-
-  }
+}

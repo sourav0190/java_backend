@@ -1,132 +1,270 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Currency Converter</title>
 </head>
+
 <body>
 
-<h2>Currency Converter</h2>
+    <div style="display: flex; gap: 40px; align-items: flex-start; padding: 20px; font-family: Arial, sans-serif;">
+        
+        <!-- Left Column: Currency Converter Form -->
+        <div style="flex: 1; min-width: 300px;">
+            <h2>Currency Converter</h2>
 
-<label>From Currency</label>
-<input type="text" id="fromCurrency" placeholder="USD">
+            <label>From Currency</label>
+            <br>
+            <input type="text" id="fromCurrency" placeholder="USD" style="width: 100%; max-width: 250px; padding: 8px;">
 
-<br><br>
+            <br><br>
 
-<label>To Currency</label>
-<input type="text" id="toCurrency" placeholder="INR">
+            <label>To Currency</label>
+            <br>
+            <input type="text" id="toCurrency" placeholder="INR" style="width: 100%; max-width: 250px; padding: 8px;">
 
-<br><br>
+            <br><br>
 
-<label>Units</label>
-<input type="number" id="units">
+            <label>Units</label>
+            <br>
+            <input type="number" id="units" style="width: 100%; max-width: 250px; padding: 8px;">
 
-<br><br>
+            <br><br>
 
-<button onclick="convertCurrency()">Convert</button>
+            <button onclick="convertCurrency()" style="padding: 10px 20px; cursor: pointer;">Convert</button>
 
-<button onclick="showCurrencies()">
-    Show Currency Codes
-</button>
+            <button onclick="showCurrencies()" style="padding: 10px 20px; cursor: pointer;">
+                Show Currency Codes
+            </button>
 
-<h3 id="result"></h3>
+            <h3 id="result"></h3>
+        </div>
 
-<div id="currencyTable" style="display:none;">
+        <!-- Right Column: Currency Codes Search panel -->
+        <div id="currencyTable" style="display: none; flex: 1; min-width: 350px; border: 1px solid #ccc; padding: 20px; border-radius: 8px; background-color: #fafafa;">
+            <h3 style="margin-top: 0;">Currency Codes</h3>
+            
+            <input type="text" id="searchBox" placeholder="Search country, currency, or code..." onkeyup="filterCurrencies()" style="width: 100%; padding: 8px; margin-bottom: 12px; box-sizing: border-box;">
+            
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse; background-color: white;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th>Country</th>
+                            <th>Currency</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Javascript will populate this dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <h3>Currency Codes</h3>
+    </div>
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Country</th>
-            <th>Currency</th>
-            <th>Code</th>
-        </tr>
+    <script>
+        // Exactly the 33 currencies supported by FreeCurrencyAPI key in the backend
+        const supportedCurrenciesList = [
+            { "country": "United States", "currency": "US Dollar", "code": "USD" },
+            { "country": "European Union", "currency": "Euro", "code": "EUR" },
+            { "country": "India", "currency": "Indian Rupee", "code": "INR" },
+            { "country": "United Kingdom", "currency": "Pound Sterling", "code": "GBP" },
+            { "country": "Japan", "currency": "Japanese Yen", "code": "JPY" },
+            { "country": "Canada", "currency": "Canadian Dollar", "code": "CAD" },
+            { "country": "Australia", "currency": "Australian Dollar", "code": "AUD" },
+            { "country": "Switzerland", "currency": "Swiss Franc", "code": "CHF" },
+            { "country": "China", "currency": "Yuan Renminbi", "code": "CNY" },
+            { "country": "Sweden", "currency": "Swedish Krona", "code": "SEK" },
+            { "country": "New Zealand", "currency": "New Zealand Dollar", "code": "NZD" },
+            { "country": "Mexico", "currency": "Mexican Nuevo Peso", "code": "MXN" },
+            { "country": "Singapore", "currency": "Singapore Dollar", "code": "SGD" },
+            { "country": "Hong Kong", "currency": "Hong Kong Dollar", "code": "HKD" },
+            { "country": "Norway", "currency": "Norwegian Krone", "code": "NOK" },
+            { "country": "South Korea", "currency": "Korean Won", "code": "KRW" },
+            { "country": "Turkey", "currency": "Turkish Lira", "code": "TRY" },
+            { "country": "Russia", "currency": "Russian Ruble", "code": "RUB" },
+            { "country": "Brazil", "currency": "Brazilian Real", "code": "BRL" },
+            { "country": "South Africa", "currency": "South African Rand", "code": "ZAR" },
+            { "country": "Denmark", "currency": "Danish Krone", "code": "DKK" },
+            { "country": "Poland", "currency": "Polish Zloty", "code": "PLN" },
+            { "country": "Thailand", "currency": "Thai Baht", "code": "THB" },
+            { "country": "Malaysia", "currency": "Malaysian Ringgit", "code": "MYR" },
+            { "country": "Hungary", "currency": "Hungarian Forint", "code": "HUF" },
+            { "country": "Czech Republic", "currency": "Czech Koruna", "code": "CZK" },
+            { "country": "Philippines", "currency": "Philippine Peso", "code": "PHP" },
+            { "country": "Israel", "currency": "Israeli New Shekel", "code": "ILS" },
+            { "country": "Indonesia", "currency": "Indonesian Rupiah", "code": "IDR" },
+            { "country": "Bulgaria", "currency": "Bulgarian Lev", "code": "BGN" },
+            { "country": "Romania", "currency": "Romanian New Leu", "code": "RON" },
+            { "country": "Iceland", "currency": "Iceland Krona", "code": "ISK" },
+            { "country": "Croatia", "currency": "Croatian Kuna", "code": "HRK" }
+        ];
 
-        <tr>
-            <td>India</td>
-            <td>Indian Rupee</td>
-            <td>INR</td>
-        </tr>
+        const COUNTRY_TO_CURRENCY = {
+            "IND": "INR", "USA": "USD", "CAN": "CAD", "PAK": "PKR", "UK": "GBP",
+            "GBR": "GBP", "DEU": "EUR", "FRA": "EUR", "JPN": "JPY", "AUS": "AUD",
+            "CHN": "CNY", "SGP": "SGD", "HKG": "HKD", "ZAF": "ZAR", "RUS": "RUB",
+            "BRA": "BRL", "MEX": "MXN", "TUR": "TRY", "KOR": "KRW", "SAU": "SAR",
+            "ARE": "AED", "EGY": "EGP", "BGD": "BDT", "LKA": "LKR", "NPL": "NPR"
+        };
 
-        <tr>
-            <td>United States</td>
-            <td>US Dollar</td>
-            <td>USD</td>
-        </tr>
+        function init() {
+            renderTable(supportedCurrenciesList);
+        }
 
-        <tr>
-            <td>European Union</td>
-            <td>Euro</td>
-            <td>EUR</td>
-        </tr>
+        function renderTable(data) {
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
+            data.sort((a, b) => a.country.localeCompare(b.country)).forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.country}</td>
+                        <td>${item.currency}</td>
+                        <td>${item.code}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
 
-        <tr>
-            <td>United Kingdom</td>
-            <td>Pound Sterling</td>
-            <td>GBP</td>
-        </tr>
+        function filterCurrencies() {
+            const searchValue = document.getElementById("searchBox").value.trim().toLowerCase();
+            const filtered = supportedCurrenciesList.filter(item =>
+                item.country.toLowerCase().includes(searchValue) ||
+                item.currency.toLowerCase().includes(searchValue) ||
+                item.code.toLowerCase().includes(searchValue)
+            );
+            renderTable(filtered);
+        }
 
-        <tr>
-            <td>Canada</td>
-            <td>Canadian Dollar</td>
-            <td>CAD</td>
-        </tr>
+        function getLevenshteinDistance(s, t) {
+            if (!s || !t) return 999;
+            const n = s.length;
+            const m = t.length;
+            let p = Array.from({length: n + 1}, (_, i) => i);
+            let d = [];
+            for (let j = 1; j <= m; j++) {
+                const t_j = t.charAt(j - 1);
+                d[0] = j;
+                for (let i = 1; i <= n; i++) {
+                    const cost = s.charAt(i - 1) === t_j ? 0 : 1;
+                    d[i] = Math.min(d[i - 1] + 1, p[i] + 1, p[i - 1] + cost);
+                }
+                p = [...d];
+            }
+            return p[n];
+        }
 
-        <tr>
-            <td>Japan</td>
-            <td>Japanese Yen</td>
-            <td>JPY</td>
-        </tr>
+        function getSuggestion(code) {
+            const upper = code.trim().toUpperCase();
+            if (COUNTRY_TO_CURRENCY[upper]) {
+                return COUNTRY_TO_CURRENCY[upper];
+            }
+            
+            let bestMatch = null;
+            let minDistance = 999;
+            const supported = supportedCurrenciesList.map(item => item.code);
+            
+            for (const validCode of supported) {
+                const dist = getLevenshteinDistance(upper, validCode);
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    bestMatch = validCode;
+                }
+            }
+            
+            if (minDistance <= 2) {
+                return bestMatch;
+            }
+            return null;
+        }
 
-        <tr>
-            <td>China</td>
-            <td>Chinese Yuan</td>
-            <td>CNY</td>
-        </tr>
+        function showCurrencies() {
+            const table = document.getElementById("currencyTable");
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        }
 
-        <tr>
-            <td>Australia</td>
-            <td>Australian Dollar</td>
-            <td>AUD</td>
-        </tr>
+        async function convertCurrency() {
+            const resultElement = document.getElementById("result");
+            resultElement.innerText = "Converting...";
 
-        <tr>
-            <td>Switzerland</td>
-            <td>Swiss Franc</td>
-            <td>CHF</td>
-        </tr>
-    </table>
+            const fromCurrency = document.getElementById("fromCurrency").value.trim().toUpperCase();
+            const toCurrency = document.getElementById("toCurrency").value.trim().toUpperCase();
+            const units = document.getElementById("units").value.trim();
 
-</div>
+            // 1. Client-side inputs validation
+            if (!fromCurrency) {
+                resultElement.innerText = "Please enter the 'From Currency' code.";
+                return;
+            }
+            if (!toCurrency) {
+                resultElement.innerText = "Please enter the 'To Currency' code.";
+                return;
+            }
+            if (!units || isNaN(units) || parseFloat(units) <= 0) {
+                resultElement.innerText = "Please enter a valid positive amount.";
+                return;
+            }
 
-<script>
+            // 2. Validate input currency codes
+            const validCodes = supportedCurrenciesList.map(item => item.code.toUpperCase());
 
-async function convertCurrency() {
+            if (!validCodes.includes(fromCurrency)) {
+                const sugg = getSuggestion(fromCurrency);
+                const msg = sugg 
+                    ? `Invalid currency code: ${fromCurrency}. Did you mean ${sugg}?`
+                    : `Invalid currency code: ${fromCurrency}.`;
+                resultElement.innerText = msg;
+                return;
+            }
 
-    const fromCurrency =
-        document.getElementById("fromCurrency").value;
+            if (!validCodes.includes(toCurrency)) {
+                const sugg = getSuggestion(toCurrency);
+                const msg = sugg 
+                    ? `Invalid currency code: ${toCurrency}. Did you mean ${sugg}?`
+                    : `Invalid currency code: ${toCurrency}.`;
+                resultElement.innerText = msg;
+                return;
+            }
 
-    const toCurrency =
-        document.getElementById("toCurrency").value;
+            try {
+                // Fetch ONLY from local backend relative endpoint
+                const url = `/convertCurrency?fromCurrency=${encodeURIComponent(fromCurrency)}&toCurrency=${encodeURIComponent(toCurrency)}&units=${encodeURIComponent(units)}`;
+                const response = await fetch(url);
+                
+                let data;
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    data = await response.json();
+                } else {
+                    data = { message: await response.text() };
+                }
 
-    const units =
-        document.getElementById("units").value;
+                if (!response.ok) {
+                    const errMsg = data.message || data.error || "An error occurred during conversion.";
+                    resultElement.innerText = errMsg;
+                } else {
+                    if (data.convertedAmount === undefined || data.convertedAmount === null) {
+                        resultElement.innerText = "Converted Amount : undefined";
+                    } else {
+                        resultElement.innerText = `Converted Amount : ${data.convertedAmount}`;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                resultElement.innerText = "Error connecting to the server.";
+            }
+        }
 
-    const url =
-        `https://souravkacurrencyconverter.up.railway.app/convertCurrency?fromCurrency=${fromCurrency}&toCurrency=${toCurrency}&units=${units}`;
-
-    const response = await fetch(url);
-
-    const data = await response.json();
-
-    document.getElementById("result").innerHTML =
-        `Converted Amount : ${data.convertedAmount}`;
-}
-
-function showCurrencies() {
-    document.getElementById("currencyTable").style.display = "block";
-}
-
-</script>
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
 
 </body>
+
 </html>
