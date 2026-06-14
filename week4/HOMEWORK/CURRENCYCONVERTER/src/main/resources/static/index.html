@@ -100,31 +100,31 @@
 
 <script>
 
-    async function convertCurrency() {
+async function convertCurrency() {
 
-        const fromCurrency =
-            document.getElementById("fromCurrency").value;
+    const fromCurrency =
+        document.getElementById("fromCurrency").value;
 
-        const toCurrency =
-            document.getElementById("toCurrency").value;
+    const toCurrency =
+        document.getElementById("toCurrency").value;
 
-        const units =
-            document.getElementById("units").value;
+    const units =
+        document.getElementById("units").value;
 
-        const response = await fetch(
-           const url =
-  `https://souravkacurrencyconverter.up.railway.app/convertCurrency?fromCurrency=${from}&toCurrency=${to}&units=${units}`;
-        );
+    const url =
+        `https://souravkacurrencyconverter.up.railway.app/convertCurrency?fromCurrency=${fromCurrency}&toCurrency=${toCurrency}&units=${units}`;
 
-        const data = await response.json();
+    const response = await fetch(url);
 
-        document.getElementById("result").innerHTML =
-            `Converted Amount : ${data.convertedAmount}`;
-    }
+    const data = await response.json();
 
-    function showCurrencies() {
-        document.getElementById("currencyTable").style.display = "block";
-    }
+    document.getElementById("result").innerHTML =
+        `Converted Amount : ${data.convertedAmount}`;
+}
+
+function showCurrencies() {
+    document.getElementById("currencyTable").style.display = "block";
+}
 
 </script>
 
